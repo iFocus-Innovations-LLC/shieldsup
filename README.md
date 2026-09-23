@@ -1,66 +1,86 @@
-# GRCToolKit Enterprise (Shields Up)
+# GRCToolKit Enterprise
 
-Private enterprise control plane. Not open source.
+Public **Apache-2.0** overlay for [GRCToolKit](https://github.com/iFocus-Innovations-LLC/GRCToolKit) Community Edition (MIT).
 
-This repository is the **GRCToolKit Enterprise** product. The product name stays GRCToolKit Enterprise. The repo name is `shieldsup`. Local work lives in `~/dev/shieldup`.
+The product name is **GRCToolKit Enterprise**. This repository (`shieldsup`) is the overlay home. **Shields Up** stays a module and campaign inside Community, not a separate product. Enterprise adds relationship, SLAs, training, token economics, and a hosted runtime path. It does not paywall OSCAL, Ansible, or the AI engine.
 
-Community Edition remains the separate public MIT product at [GRCToolKit](https://github.com/iFocus-Innovations-LLC/GRCToolKit). This codebase does not pin, submodule, or ship Community.
+| | Community | This overlay |
+|--|-----------|----------------|
+| Repo | [GRCToolKit](https://github.com/iFocus-Innovations-LLC/GRCToolKit) | [shieldsup](https://github.com/iFocus-Innovations-LLC/shieldsup) |
+| License | MIT | Apache-2.0 |
+| Role | OSCAL, Ansible, AI engine, Shields Up probes | Pin Community, HITL AU-2 audit log, BYOK vs pool stub |
 
-## What this MVP includes
+Robotics probe implementation stays in Community and is still gated there. Do not copy `oscal/` or `ansible/playbooks` into this repo. See [docs/OPEN-CORE.md](docs/OPEN-CORE.md).
 
-- A lightweight HTTP API with `GET /healthz`
-- A Helm chart that installs that API on any conformant Kubernetes
-- A local **kind** test path on this machine
-
-It does not include PostgreSQL, OIDC, HITL audit, Hugging Face model pull, or a mobile client yet. Those follow after this health slice.
-
-## License
-
-Proprietary. All rights reserved by iFocus Innovations LLC. The Apache-2.0 `LICENSE` file on `main` is a leftover from the public stub and is not the license for new enterprise code in this branch.
-
-## Test the MVP (kind)
-
-Do not install this chart into the Community GKE cluster. Use a local kind cluster.
+## Five-minute local path
 
 ```bash
-# Install tools once (Homebrew)
-brew install kind helm kubectl
-
-# Create a local cluster
-kind create cluster --name shieldsup
-
-# Build and load the image
-docker build -t shieldsup-api:mvp ./api
-kind load docker-image shieldsup-api:mvp --name shieldsup
-
-# Install
-kubectl create namespace shieldsup
-helm upgrade --install shieldsup ./charts/shieldsup \
-  --namespace shieldsup \
-  --set image.repository=shieldsup-api \
-  --set image.tag=mvp \
-  --set image.pullPolicy=Never
-
-# Prove health
-kubectl -n shieldsup rollout status deploy/shieldsup-api
-kubectl -n shieldsup port-forward svc/shieldsup-api 8080:80
-# in another shell:
-curl -sS http://127.0.0.1:8080/healthz
+git clone https://github.com/iFocus-Innovations-LLC/shieldsup.git
+cd shieldsup
+git submodule update --init
+cp .env.example .env
+docker compose up --build
 ```
 
-Expect `{"status":"ok"}`.
+- Community UI (from the pinned submodule): http://localhost:8080
+- Overlay API: http://localhost:8090/healthz
+- OpenAPI: http://localhost:8090/docs
 
-## Run the API without Kubernetes
+Record a HITL decision. The overlay stores the event and does not remediate.
+
+```bash
+curl -sS -X POST http://localhost:8090/v1/hitl/events \
+  -H 'content-type: application/json' \
+  -H 'X-Tenant-Id: local' \
+  -d '{"actor":"analyst@example.com","action":"review-control","model_id":"gemini-2.0-flash","approx_tokens":120,"decision":"deny"}'
+```
+
+Switch the metering stub without putting a real pool credential in git:
+
+```bash
+TOKEN_MODE=pool docker compose up --build overlay
+curl -sS http://localhost:8090/v1/metering
+```
+
+`TOKEN_MODE=byok` (default) means the customer supplies the key. `TOKEN_MODE=pool` returns `POOL_REMAINING`, a fake integer for local demos.
+
+Without Docker, the API alone:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r api/requirements.txt
-.venv/bin/uvicorn app.main:app --app-dir api --port 8080
-curl -sS http://127.0.0.1:8080/healthz
+.venv/bin/pip install -r overlay/requirements.txt
+AUDIT_DB_PATH=./data/audit.db TOKEN_MODE=byok \
+  .venv/bin/uvicorn app.main:app --app-dir overlay --port 8090
 ```
 
-## Architecture notes
+Community UI without the overlay image:
 
-- Helm is the supported install path for any cloud Kubernetes (EKS, AKS, GKE, kind, k3s).
-- The same lightweight API is the contract for a later mobile client and a private Hugging Face model pin.
-- HITL decisions, when added, are append-only and never execute remediation.
+```bash
+make community-up
+```
+
+## Sprint 1 boundary
+
+In this sprint the overlay can:
+
+- pin Community at `v2.1.0-qa-demo`
+- serve that UI from the submodule
+- accept `X-Tenant-Id` (default `local`)
+- append HITL approve/deny events (actor, action, timestamp, model id, approximate tokens, decision, token mode)
+- report BYOK vs a fake pool balance
+
+It does not run remediation, bill tokens, host ADK schedulers, or isolate tenants.
+
+Scrum cadence and definition of done: [docs/SCRUM.md](docs/SCRUM.md).
+
+## Branches
+
+`main` is stable. `dev` is integration. Day-to-day work lands on `feature/*` via pull request into `dev`. Same model as Community ([RELEASE-BRANCHING.md](https://github.com/iFocus-Innovations-LLC/GRCToolKit/blob/main/docs/RELEASE-BRANCHING.md)).
+
+## Security
+
+Public repository. No secrets, customer data, or real token-pool credentials. Report vulnerabilities in private GitHub Security Advisories. See [SECURITY.md](SECURITY.md).
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE). The Community submodule remains under its own MIT license.
