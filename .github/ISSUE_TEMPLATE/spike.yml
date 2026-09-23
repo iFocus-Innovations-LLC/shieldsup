@@ -1,0 +1,26 @@
+name: Spike
+description: Time-boxed investigation with a recommendation
+title: "[Spike]: "
+labels: ["type:spike"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A spike ends in a written recommendation. It does not ship production identity, billing, or remediation.
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Options to compare
+    validations:
+      required: true
+  - type: input
+    id: points
+    attributes:
+      label: Points
+      placeholder: "2"
