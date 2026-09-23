@@ -1,0 +1,29 @@
+name: Story
+description: User-facing sprint work
+title: "[Story]: "
+labels: ["type:story"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include secrets, customer data, or real token-pool credentials.
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What will be true when this story is done?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: In scope and out of scope.
+    validations:
+      required: true
+  - type: input
+    id: points
+    attributes:
+      label: Points
+      description: Fibonacci relative points
+      placeholder: "3"

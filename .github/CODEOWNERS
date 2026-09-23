@@ -1,0 +1,10 @@
+# CODEOWNERS — GRCToolKit Enterprise overlay (shieldsup)
+# Last match wins. https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+*                       @iFocus-Innovations-LLC
+.github/                @iFocus-Innovations-LLC
+overlay/                @iFocus-Innovations-LLC
+docs/                   @iFocus-Innovations-LLC
+docker-compose.yml      @iFocus-Innovations-LLC
+SECURITY.md             @iFocus-Innovations-LLC
+README.md               @iFocus-Innovations-LLC
