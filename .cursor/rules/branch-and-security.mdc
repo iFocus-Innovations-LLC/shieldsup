@@ -1,0 +1,20 @@
+---
+description: Land changes on feature branches and pass the security scan before a pull request
+alwaysApply: true
+---
+
+# Branches and security gate
+
+`main` accepts changes only through a pull request. Do not commit or push to `main`.
+
+## Before changing code
+
+1. Start from an up-to-date `main`.
+2. Create a branch named `feature/<short-topic>`.
+3. Commit only on that branch.
+
+## Before opening a pull request
+
+Run `scripts/security-scan.sh` from the repo root. Do not open a pull request when it fails.
+
+GitHub Actions runs that script as the `test` check, plus CodeQL, on every pull request to `main`. Do not merge unless the user asks.

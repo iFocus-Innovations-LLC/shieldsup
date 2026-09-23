@@ -59,6 +59,18 @@ python3 -m venv .venv
 curl -sS http://127.0.0.1:8080/healthz
 ```
 
+## How changes land
+
+Do not commit or push to `main`. Use a `feature/<topic>` branch and a pull request.
+
+Before opening the pull request, run:
+
+```bash
+scripts/security-scan.sh
+```
+
+GitHub Actions runs that script and CodeQL on the pull request. See [SECURITY.md](SECURITY.md).
+
 ## Architecture notes
 
 - Helm is the supported install path for any cloud Kubernetes (EKS, AKS, GKE, kind, k3s).
