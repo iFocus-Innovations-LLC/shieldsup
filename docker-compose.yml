@@ -1,0 +1,25 @@
+# Local Enterprise stack. Community UI is built from the submodule.
+# No secrets belong in this file.
+services:
+  community:
+    build:
+      context: ./community
+    ports:
+      - "8080:8080"
+    environment:
+      LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
+
+  overlay:
+    build:
+      context: ./overlay
+    ports:
+      - "8090:8090"
+    environment:
+      TOKEN_MODE: ${TOKEN_MODE:-byok}
+      POOL_REMAINING: ${POOL_REMAINING:-10000}
+      AUDIT_DB_PATH: /data/audit.db
+    volumes:
+      - audit-data:/data
+
+volumes:
+  audit-data:

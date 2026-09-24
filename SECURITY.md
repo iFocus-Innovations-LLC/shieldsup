@@ -1,25 +1,24 @@
-# Security
+# Security policy
+
+`shieldsup` is a **public** Apache-2.0 repository. Treat every file and issue as world-readable.
 
 ## Reporting a vulnerability
 
-Use a private [GitHub security advisory](https://github.com/iFocus-Innovations-LLC/shieldsup/security/advisories/new) on this repository. Do not open a public issue for a suspected vulnerability.
+Do not open a public GitHub issue for a security report.
 
-## How code reaches main
+Use a private [GitHub Security Advisory](https://github.com/iFocus-Innovations-LLC/shieldsup/security/advisories/new) on this repository. Include steps to reproduce, impact, and whether Community (`GRCToolKit`) is affected. If you cannot use advisories, contact the maintainer through the iFocus Innovations LLC GitHub organization.
 
-1. Create a `feature/<topic>` branch. Do not commit or push to `main`.
-2. Run `scripts/security-scan.sh` before opening a pull request.
-3. Open a pull request. GitHub Actions runs the same script (`test`) and CodeQL.
-4. Merge only when those checks are green.
+## Secrets
 
-Secret scanning push protection blocks known secrets at push time, before a pull request exists.
+- No API keys, token-pool credentials, customer data, or `.env` files in git.
+- Local secrets stay in an untracked `.env` (see `.env.example`).
+- Hosted secrets belong in a secret manager (GCP Secret Manager on the Enterprise path). The Sprint 1 overlay does not read a live secret manager.
+- `POOL_REMAINING` is a fake integer for the metering stub. It is not a credential and not a balance of record.
 
-## What the scan covers
+## HITL
 
-- Unit tests
-- Bandit on `api/app`
-- `pip-audit` on `api/requirements.txt`
-- Gitleaks on git history
-- Trivy on the API image and the rendered Helm chart (critical and high; unfixed issues do not fail the scan)
-- `helm lint`
+The overlay records approve/deny decisions in an append-only AU-2 style log. It does not execute remediation. Do not add a path that applies changes because an event was stored.
 
-After this pipeline is on `main`, the `main` ruleset should require a pull request, the `test` status check, and CodeQL.
+## Community pin
+
+OSCAL catalogs and Ansible playbooks are consumed from the `community` submodule. Do not copy them into this repo. A CI check fails the build if `oscal/` or `ansible/playbooks` appear outside that submodule.

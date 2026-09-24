@@ -1,0 +1,26 @@
+name: Bug
+description: Incorrect behavior or a regression
+title: "[Bug]: "
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste API keys, tokens, or customer compliance data.
+        For vulnerabilities, open a private security advisory instead of a public issue.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit or image
