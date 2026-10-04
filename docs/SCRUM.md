@@ -13,7 +13,9 @@ Sprint length: **2 weeks**. Capacity assumption: 1–2 engineers plus a product 
 
 ## Board
 
-GitHub Project columns:
+Milestone **Sprint 1** holds S1-0 through S1-8 (filed as issues #1–#9). Labels: `type:story|spike|bug`, `area:auth|audit|metering|platform|docs`, `priority:p0|p1`.
+
+GitHub Project columns (create once with org `project` scope):
 
 1. **Backlog**
 2. **Sprint**
@@ -21,7 +23,12 @@ GitHub Project columns:
 4. **Review**
 5. **Done**
 
-Milestone **Sprint 1** holds S1-0 through S1-8. Labels: `type:story|spike|bug`, `area:auth|audit|metering|platform|docs`, `priority:p0|p1`.
+```bash
+gh auth refresh -s project,read:project
+gh project create --owner iFocus-Innovations-LLC --title "GRCToolKit Enterprise"
+```
+
+Sprint 1 issues are closed on the milestone. The Project board is optional tracking; the milestone is the source of truth until the org token includes `project` scope.
 
 ## Definition of done
 

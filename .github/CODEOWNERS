@@ -4,6 +4,7 @@
 *                       @iFocus-Innovations-LLC
 .github/                @iFocus-Innovations-LLC
 overlay/                @iFocus-Innovations-LLC
+api/                    @iFocus-Innovations-LLC
 docs/                   @iFocus-Innovations-LLC
 docker-compose.yml      @iFocus-Innovations-LLC
 SECURITY.md             @iFocus-Innovations-LLC

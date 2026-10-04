@@ -8,7 +8,7 @@ cd "${root}"
 
 matches="$(
   find . \
-    \( -path ./.git -o -path ./community -o -path ./.venv \) -prune \
+    \( -path ./.git -o -path ./community -o -path ./.venv -o -path ./.tools -o -path ./.worktrees \) -prune \
     -o -type d \( -name oscal -o -path '*/ansible/playbooks' \) -print
 )"
 
